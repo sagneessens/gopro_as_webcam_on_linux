@@ -440,8 +440,9 @@ main() {
         # prompt to plug in the cable and turn on the device
         user_confirmation
 
-        # trap the sigint signal to stop webcam mode
+        # trap the signals to stop webcam mode
         trap stop_webcam SIGINT
+        trap stop_webcam SIGTERM
 
         # Try to detect the correct interface and start the webcam mode
         start_webcam
