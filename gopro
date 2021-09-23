@@ -349,6 +349,24 @@ function start_gopro_webcam_mode {
     green "Sucessfully started the GoPro Webcam mode. (The icon on the Camera should have changed)"
 }
 
+function stop_gopro_webcam_mode() {
+
+    local response
+    # Switching to the GoPro Webcam mode
+    response=$(curl -s ${GOPRO_INTERFACE_IP}${STOP_PATH})
+    if [ $? -ne 0 ]; then
+        red "Error while stopping the Webcam mode. # TODO Useful message."
+        exit 1
+    fi 
+    echo $response
+    if [[ -z "${response}" ]]; then
+        red "Did not receive a valid response from your GoPro. Please try again to run this script, timing is sometimes crucial."
+        exit 1
+    fi
+
+    green "Sucessfully stopped the GoPro Webcam mode."
+}
+
 function start_webcam {
 
     if [[ ! ${GOPRO_DEVICE} ]] && [[ ! ${GOPRO_IP} ]]; then
@@ -360,6 +378,11 @@ function start_webcam {
     start_gopro_webcam_mode
 
     expose_device
+}
+
+function stop_webcam {
+
+    stop_gopro_webcam_mode
 }
 
 function expose_device {
@@ -416,6 +439,9 @@ main() {
 
         # prompt to plug in the cable and turn on the device
         user_confirmation
+
+        # trap the sigint signal to stop webcam mode
+        trap stop_webcam SIGINT
 
         # Try to detect the correct interface and start the webcam mode
         start_webcam
