@@ -383,6 +383,8 @@ function start_webcam {
 function stop_webcam {
 
     stop_gopro_webcam_mode
+    
+    exit 0
 }
 
 function expose_device {
